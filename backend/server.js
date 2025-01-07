@@ -1,22 +1,26 @@
 import express from "express";
 import cors from "cors";
-import mongoose from "mongoose";
 import dotenv from "dotenv";
+import connectDB from "./config/db.js";
+import userRoutes from "./routes/UserRoutes.js";
 
-dotenv.config( { path: "./.env" } );
+dotenv.config({ path: "./.env" }); // Load environment variables
+
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
+// Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.static("public"));
 
-const connectionURI = process.env.MONGODB_URI
+// Connect to Database
+connectDB();
 
-mongoose.connect(connectionURI).then(()=>{
-    console.log("Connected to MongoDB");
-}).catch((err)=>{
-    console.log(err);
-})
-app.listen(port , ()=>{
-    console.log(`Server is running on port ${port}`);
-})
+// Routes
+app.use("/api/users", userRoutes);
+
+// Start Server
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
