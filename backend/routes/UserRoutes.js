@@ -23,26 +23,23 @@ router.post("/login", async (req, res) => {
 
 
 //CREATE NEW USER
-router.post("/signup" , async(req, res)=>{
-try {
-    const { name, email, password } = req.body;
-    const existingUser = await UserDetails.findOne({email});
-    if (existingUser) {
-        return res.status(400).json({ error: "User already exists" });
+router.post("/signup", async (req, res) => {
+    try {
+      const { name, email, password } = req.body;
+      const existingUser = await UserDetails.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({ error: "User already exists" }); // JSON response for errors
+      }
+  
+      const newUser = new UserDetails({ name, email, password });
+      await newUser.save();
+  
+      res.status(201).json({ message: "User registered successfully", user: newUser }); // Valid JSON response
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" }); // Always send JSON
     }
-    const newUser = new UserDetails({ name, email, password });
-    await newUser.save();
-    res.status(201).json({ 
-        newUser,
-        success: true,
-        message: "User created successfully" });
-} 
-catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: "Internal Server Error while creating user" });
-}
-})
-
+  });
 //GET ALL USERS
 router.get("/" , async(req , res)=>{
     try {
