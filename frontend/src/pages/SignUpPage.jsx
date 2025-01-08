@@ -1,5 +1,6 @@
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -15,24 +16,17 @@ const SignUpPage = () => {
       e.preventDefault();
       setIsLoading(true);
       try {
-        const response = await fetch("http://localhost:8000/api/users/signup", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
+        const response = await axios.post("http://localhost:8000/api/users/signup", {
             name: input,
             email: email,
             password: password,
-          }),
         });
-        if (!response.ok) {
-          const error = await response.json();
+        if (!response.data.success) {
+          alert(response.data.error);
           setIsLoading(false);
-          console.log(error);
+          
         }
-        const data = await response.json();
-        console.log(data);
+        console.log(response);
         alert("User registered successfully!");
         navigate("/dashboard");
         

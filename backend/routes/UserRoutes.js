@@ -14,7 +14,7 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    return res.status(200).json({ "message": "Login successful"  , success : true});
+    return res.status(200).json({ "message": "Login successful"  , success });
   } catch (error) {
     console.log(error);
     res.status(500).send("Internal Server Error while signing in user");
@@ -28,16 +28,16 @@ router.post("/signup", async (req, res) => {
       const { name, email, password } = req.body;
       const existingUser = await UserDetails.findOne({ email });
       if (existingUser) {
-        return res.status(400).json({ error: "User already exists" }); // JSON response for errors
+        return res.status(400).json({ error: "User already exists , please login" }); // JSON response for errors
       }
   
       const newUser = new UserDetails({ name, email, password });
       await newUser.save();
   
-      res.status(201).json({ message: "User registered successfully", user: newUser }); // Valid JSON response
+      res.status(201).json({ message: "User registered successfully", user: newUser , success : true }); // Valid JSON response
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Internal server error" }); // Always send JSON
+      res.status(500).json({ error: "Internal server error" , success : false }); // Always send JSON
     }
   });
 //GET ALL USERS
