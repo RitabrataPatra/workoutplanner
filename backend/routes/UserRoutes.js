@@ -10,11 +10,11 @@ router.post("/login", async (req, res) => {
     const { email, password } = req.body;
     const user = await UserDetails.findOne({ email });
 
-    if (!user || user.password !== password) {
+    if (!user || user.password !== password || user.email !== email) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    return res.status(200).json({ "message": "Login successful"  , success });
+    return res.status(200).json({ "message": "Login successful"  , success : true , id : user._id  });
   } catch (error) {
     console.log(error);
     res.status(500).send("Internal Server Error while signing in user");
@@ -52,6 +52,21 @@ router.get("/" , async(req , res)=>{
     } catch (error) {
         console.log(error);
         return res.status(500).json({ error: "Internal Server Error while getting users" });
+    }
+})
+
+//GET USER BY ID
+router.get("/:id" , async(req , res)=>{
+    try {
+        console.log("Entered try!");
+        const user = await UserDetails.findById(req.params.id);
+        if(!user){
+            return res.status(404).json({ error: "No user found or issue with getting user" });
+        }
+        res.status(200).json({user , message: "User fetched successfully"});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Internal Server Error while getting user by id" });
     }
 })
 

@@ -28,7 +28,7 @@ const SignUpPage = () => {
         }
         // console.log(response);
         alert("User registered successfully!");
-        navigate("/dashboard");
+        navigate("/login");
         
       } catch (error) {
         console.log(error);

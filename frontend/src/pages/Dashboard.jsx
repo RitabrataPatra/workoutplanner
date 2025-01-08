@@ -1,49 +1,44 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 const Dashboard = () => {
-  const[userData , setUserData] = useState([]);
-  const[isLoading , setIsLoading] = useState(false);
-  const getUserList = async () => {
-    setIsLoading(true);
+  // const [userData, setUserData] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null); // For single user details
+  // const [isLoading, setIsLoading] = useState(false);
+  const [isFetchingUser, setIsFetchingUser] = useState(false); // Loading state for individual user
+
+  //splitting url to get id
+  const url = window.location.href;
+  const userId = url.split("/").pop();
+
+  // Fetch a user by ID
+  const getUserById = async (userId) => {
+    setIsFetchingUser(true);
     try {
-      const {data} = await axios.get("http://localhost:8000/api/users");
-      console.log(data);
-      if(data){
-        setUserData(data.users)
+      const { data } = await axios.get(`http://localhost:8000/api/users/${userId}`);
+      if (data) {
+        setSelectedUser(data.user); // Assuming the API response contains a `user` object
       }
-      
     } catch (error) {
-      alert("Error in getting users");
+      alert("Error in getting user details");
       console.log(error);
-    }finally{
-      setIsLoading(false);
+    } finally {
+      setIsFetchingUser(false);
     }
-  }
- 
+  };
+
   useEffect(() => {
-    getUserList();
-  } ,[])
+    console.log("useEffect called");
+    getUserById(userId);
+  }, [userId]);
 
-  
   return (
-    <>
-    {
-      isLoading ? <div>Loading...</div> : (
-        <div>
-          <h1>Dashboard , total users : {userData.length}</h1>
-          { userData.length > 0 &&
-            userData.map((user) => (
-              <div key={user._id}>
-                <h1>{user.name}</h1>
-              </div>
-            ))
-          }
-        </div>
-      ) 
-    }
-    </>
-  )
-}
+   <div>
+    {isFetchingUser ? <h1>Loading...</h1> : 
+    <h1 className="text-2xl capitalize">Welcome , {selectedUser?.name} 🔥
+    </h1>}
+   </div>
+  );
+};
 
-export default Dashboard
+export default Dashboard;

@@ -16,10 +16,10 @@ const LoginPage = () => {
     setIsLoading(true);
     try {
       const {data} =  await axios.post("http://localhost:8000/api/users/login", formData);
-      // console.log("sucess!!" , data);
+      console.log("sucess!!" , data);
       if(data.success){
         alert(data.message);
-        navigate("/dashboard");
+        navigate(`/dashboard/${data.id}`); 
       }
     } catch (error) {
       console.log(error);
